@@ -55,4 +55,7 @@ This project was developed as part of the **Python Programming – Summative Ass
 ---
 
 ## 📂 Project Structure
+├── app.py
+├── requirements.txt
+└── README.md
 
