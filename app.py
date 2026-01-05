@@ -1,6 +1,6 @@
 import streamlit as st
-from datetime import datetime, time
-import turtle
+from datetime import datetime
+from PIL import Image, ImageDraw
 
 # -----------------------------
 # Page Config
@@ -11,10 +11,10 @@ st.set_page_config(
 )
 
 st.title("💊 MedTimer – Daily Medicine Companion")
-st.write("A friendly app to help you track medicines with ease and confidence.")
+st.write("A calm, friendly app to help you remember daily medicines.")
 
 # -----------------------------
-# Initialize Session State
+# Session State
 # -----------------------------
 if "medicines" not in st.session_state:
     st.session_state.medicines = []
@@ -34,55 +34,38 @@ def get_status(med_time, taken):
 def calculate_adherence():
     if len(st.session_state.medicines) == 0:
         return 0
-    taken_count = sum(1 for m in st.session_state.medicines if m["taken"])
-    return int((taken_count / len(st.session_state.medicines)) * 100)
+    taken = sum(1 for m in st.session_state.medicines if m["taken"])
+    return int((taken / len(st.session_state.medicines)) * 100)
 
-def draw_turtle_smiley():
-    screen = turtle.Screen()
-    screen.bgcolor("white")
-    t = turtle.Turtle()
-    t.speed(3)
+def draw_reward_image():
+    img = Image.new("RGB", (300, 300), "white")
+    draw = ImageDraw.Draw(img)
 
     # Face
-    t.penup()
-    t.goto(0, -50)
-    t.pendown()
-    t.circle(100)
+    draw.ellipse((50, 50, 250, 250), outline="green", width=6)
 
     # Eyes
-    t.penup()
-    t.goto(-35, 40)
-    t.pendown()
-    t.circle(10)
-
-    t.penup()
-    t.goto(35, 40)
-    t.pendown()
-    t.circle(10)
+    draw.ellipse((110, 120, 130, 140), fill="black")
+    draw.ellipse((170, 120, 190, 140), fill="black")
 
     # Smile
-    t.penup()
-    t.goto(-40, 0)
-    t.pendown()
-    t.setheading(-60)
-    t.circle(50, 120)
+    draw.arc((110, 150, 190, 220), start=0, end=180, fill="green", width=5)
 
-    t.hideturtle()
-    screen.exitonclick()
+    return img
 
 # -----------------------------
-# Input Section
+# Add Medicine Section
 # -----------------------------
 st.header("➕ Add Medicine")
 
 with st.form("medicine_form"):
-    med_name = st.text_input("Medicine Name")
+    name = st.text_input("Medicine Name")
     med_time = st.time_input("Scheduled Time")
-    submitted = st.form_submit_button("Add Medicine")
+    add = st.form_submit_button("Add Medicine")
 
-    if submitted and med_name:
+    if add and name:
         st.session_state.medicines.append({
-            "name": med_name,
+            "name": name,
             "time": med_time,
             "taken": False
         })
@@ -93,21 +76,23 @@ with st.form("medicine_form"):
 # -----------------------------
 st.header("📋 Today's Medicine Checklist")
 
-if len(st.session_state.medicines) == 0:
+if not st.session_state.medicines:
     st.info("No medicines added yet.")
 else:
     for i, med in enumerate(st.session_state.medicines):
         status, color = get_status(med["time"], med["taken"])
 
-        col1, col2, col3, col4 = st.columns([3, 2, 2, 2])
+        c1, c2, c3, c4 = st.columns([3, 2, 2, 2])
+        c1.write(f"**{med['name']}**")
+        c2.write(med["time"].strftime("%H:%M"))
+        c3.markdown(
+            f"<span style='color:{color}'><b>{status}</b></span>",
+            unsafe_allow_html=True
+        )
 
-        col1.write(f"**{med['name']}**")
-        col2.write(med["time"].strftime("%H:%M"))
-        col3.markdown(f"<span style='color:{color}'>{status}</span>", unsafe_allow_html=True)
-
-        if col4.button("Mark as Taken", key=i):
+        if c4.button("Mark as Taken", key=i):
             st.session_state.medicines[i]["taken"] = True
-            st.experimental_rerun()
+            st.rerun()
 
 # -----------------------------
 # Adherence Score
@@ -119,14 +104,12 @@ st.progress(score)
 st.write(f"**Adherence: {score}%**")
 
 if score >= 80:
-    st.success("Great job! You're doing very well 🌟")
-    st.write("🎉 Click the button below for a reward!")
-    if st.button("Show Reward"):
-        draw_turtle_smiley()
+    st.success("Excellent! You're taking great care of your health 🌟")
+    st.image(draw_reward_image(), caption="🎉 Great Adherence Reward")
 else:
     st.warning("Keep going! Every dose matters 💙")
 
 # -----------------------------
 # Motivational Tip
 # -----------------------------
-st.info("💡 Tip: Taking medicines on time keeps your treatment effective and stress-free.")
+st.info("💡 Tip: Taking medicines on time improves recovery and peace of mind.")
