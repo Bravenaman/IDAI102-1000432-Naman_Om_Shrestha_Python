@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import datetime
 from PIL import Image, ImageDraw
+import pandas as pd
 
 # -----------------------------
 # Page Config
@@ -53,6 +54,18 @@ def draw_reward_image():
 
     return img
 
+def generate_csv():
+    data = []
+    for med in st.session_state.medicines:
+        status, _ = get_status(med["time"], med["taken"])
+        data.append({
+            "Medicine Name": med["name"],
+            "Scheduled Time": med["time"].strftime("%H:%M"),
+            "Status": status,
+            "Taken": "Yes" if med["taken"] else "No"
+        })
+    return pd.DataFrame(data)
+
 # -----------------------------
 # Add Medicine Section
 # -----------------------------
@@ -90,7 +103,7 @@ else:
             unsafe_allow_html=True
         )
 
-        if c4.button("Mark as Taken", key=i):
+        if c4.button("Mark as Taken", key=f"taken_{i}"):
             st.session_state.medicines[i]["taken"] = True
             st.rerun()
 
@@ -108,6 +121,23 @@ if score >= 80:
     st.image(draw_reward_image(), caption="🎉 Great Adherence Reward")
 else:
     st.warning("Keep going! Every dose matters 💙")
+
+# -----------------------------
+# Download Report Section
+# -----------------------------
+st.header("⬇️ Download Medicine Report")
+
+if st.session_state.medicines:
+    df = generate_csv()
+
+    st.download_button(
+        label="Download CSV Report",
+        data=df.to_csv(index=False),
+        file_name="medtimer_report.csv",
+        mime="text/csv"
+    )
+else:
+    st.info("Add medicines to generate a report.")
 
 # -----------------------------
 # Motivational Tip
