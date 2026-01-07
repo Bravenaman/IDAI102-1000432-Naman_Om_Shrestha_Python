@@ -1,61 +1,57 @@
 # IDAI102-1000432-Naman_Om_Shrestha_Python
-# MedTimer – Daily Medicine Companion 💊
+# 💊 MedTimer – Daily Medicine Companion
 
-MedTimer is a Python-based interactive web application designed to help users remember and manage their daily medicines. The app focuses on simplicity, clarity, and encouragement, making it especially suitable for elderly users and individuals managing long-term or chronic health conditions.
-
-The application is built using **Python** and **Streamlit** and is deployed online using **Streamlit Cloud**.
-
----
-
-## 🎯 Project Objective
-
-The main objective of MedTimer is to:
-- Help users remember medicines on time
-- Reduce stress related to daily medication routines
-- Provide clear visual feedback on medicine status
-- Encourage consistent medicine adherence through positive reinforcement
-
-This project was developed as part of the **Python Programming – Summative Assessment** for the **Artificial Intelligence CRS**.
+MedTimer is a **Streamlit-based web application** that acts as a calm, friendly **daily medicine companion**.  
+It helps users remember scheduled medicines, track whether doses were taken, and visualize adherence — all in one simple interface.
 
 ---
 
-## 👥 Target Users
+## 🧠 What MedTimer Does
 
-- Elderly individuals
-- People with chronic illnesses
-- Caregivers supporting daily medicine routines
+- Lets users **add medicines with scheduled times**
+- Shows a **daily checklist** with clear status indicators
+- Allows users to **mark medicines as taken**
+- Calculates a **medicine adherence score**
+- Rewards good adherence with a **visual encouragement**
+- Generates and downloads a **CSV medicine report**
 
----
-
-## ✨ Key Features
-
-- Add medicines with name and scheduled time
-- Daily medicine checklist
-- Color-coded status:
-  - 🟢 Taken  
-  - 🟠 Upcoming  
-  - 🔴 Missed
-- Weekly adherence score with progress bar
-- Visual reward for good adherence
-- Downloadable CSV report of medicines
-- Simple and user-friendly interface
+This app is designed to reduce missed doses and encourage consistency in daily medication routines.
 
 ---
 
-## 🛠️ Technologies Used
+## 🚀 Features
+
+### ⏰ Medicine Scheduling
+- Add medicine name and scheduled time
+- Automatically classifies medicines as:
+  - **Upcoming**
+  - **Missed**
+  - **Taken**
+
+### 📋 Daily Medicine Checklist
+- View all medicines scheduled for the day
+- Mark medicines as **Taken** with one click
+- Color-coded status for easy understanding
+
+### 📊 Adherence Tracking
+- Calculates adherence percentage based on taken medicines
+- Displays progress using a visual progress bar
+- Encouraging feedback based on performance
+
+### 🎉 Reward System
+- Displays a custom **reward image** when adherence is ≥ 80%
+- Motivates users to stay consistent
+
+### ⬇️ Downloadable Report
+- Export medicine data as a **CSV file**
+- Includes medicine name, scheduled time, and status
+
+---
+
+## 🛠️ Tech Stack
 
 - **Python**
-- **Streamlit**
-- **Datetime module**
-- **Pandas**
-- **Pillow (for visual rewards)**
-- **GitHub** (version control)
-- **Streamlit Cloud** (deployment)
-
----
-
-## 📂 Project Structure
-├── app.py
-├── requirements.txt
-└── README.md
-
+- **Streamlit** – UI framework
+- **Pandas** – Data handling & CSV export
+- **Pillow (PIL)** – Reward image generation
+- **Datetime** – Time-based logic
