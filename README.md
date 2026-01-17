@@ -55,3 +55,7 @@ This app is designed to reduce missed doses and encourage consistency in daily m
 - **Pandas** – Data handling & CSV export
 - **Pillow (PIL)** – Reward image generation
 - **Datetime** – Time-based logic
+
+---
+### Live Streamlit Application Link:-
+https://idai102-1000432-namanomshrestha.streamlit.app/
