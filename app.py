@@ -85,7 +85,7 @@ def draw_reward_image():
 # -------------------------------------------------
 st.sidebar.header("🌈 Daily Companion")
 st.sidebar.info("💡 Consistency today protects your future health.")
-st.sidebar.info("🌙 Dark mode can be enabled from Streamlit settings.")
+st.sidebar.info("🌙 Switch Light/Dark mode from Streamlit settings.")
 
 # -------------------------------------------------
 # Add Medicine
@@ -106,7 +106,7 @@ with st.form("medicine_form"):
         st.success("Medicine added successfully!")
 
 # -------------------------------------------------
-# Medicine Checklist
+# Medicine Checklist (WITH DELETE)
 # -------------------------------------------------
 st.header("📋 Today’s Medicine Checklist")
 
@@ -114,7 +114,8 @@ if not st.session_state.medicines:
     st.info("No medicines added yet.")
 else:
     for i, med in enumerate(st.session_state.medicines):
-        c1, c2, c3, c4 = st.columns([3, 2, 2, 2])
+        c1, c2, c3, c4, c5 = st.columns([3, 2, 2, 2, 1])
+
         c1.write(f"**{med['name']}**")
         c2.write(med["time"].strftime("%H:%M"))
 
@@ -131,6 +132,10 @@ else:
             if not st.session_state.medicines[i]["taken"]:
                 st.session_state.medicines[i]["taken"] = True
                 st.session_state.celebrate = True
+            st.rerun()
+
+        if c5.button("🗑️", key=f"delete_{i}"):
+            st.session_state.medicines.pop(i)
             st.rerun()
 
 # -------------------------------------------------
