@@ -1,145 +1,221 @@
 import streamlit as st
 from datetime import datetime
-from PIL import Image, ImageDraw
+import random
 import pandas as pd
+from PIL import Image, ImageDraw
 
-# -----------------------------
+# -------------------------------------------------
 # Page Config
-# -----------------------------
+# -------------------------------------------------
 st.set_page_config(
-    page_title="MedTimer - Daily Medicine Companion",
+    page_title="MedTimer – Daily Medicine Companion",
     layout="wide"
 )
 
 st.title("💊 MedTimer – Daily Medicine Companion")
-st.write("A calm, friendly app to help you remember daily medicines.")
+st.write("A friendly app that helps you stay consistent with your daily medicines.")
 
-# -----------------------------
+# -------------------------------------------------
 # Session State
-# -----------------------------
+# -------------------------------------------------
 if "medicines" not in st.session_state:
     st.session_state.medicines = []
 
-# -----------------------------
-# Functions
-# -----------------------------
+if "streak" not in st.session_state:
+    st.session_state.streak = 0
+
+if "badges" not in st.session_state:
+    st.session_state.badges = set()
+
+# -------------------------------------------------
+# Utility Functions
+# -------------------------------------------------
 def get_status(med_time, taken):
     now = datetime.now().time()
     if taken:
-        return "Taken", "green"
+        return "Taken"
     elif now < med_time:
-        return "Upcoming", "orange"
+        return "Upcoming"
     else:
-        return "Missed", "red"
+        return "Missed"
 
 def calculate_adherence():
-    if len(st.session_state.medicines) == 0:
+    if not st.session_state.medicines:
         return 0
     taken = sum(1 for m in st.session_state.medicines if m["taken"])
     return int((taken / len(st.session_state.medicines)) * 100)
 
+def update_streak():
+    if not st.session_state.medicines:
+        return
+    if all(m["taken"] for m in st.session_state.medicines):
+        st.session_state.streak += 1
+    else:
+        st.session_state.streak = 0
+
+def check_badges(score):
+    s = st.session_state.streak
+    b = st.session_state.badges
+
+    if s >= 1:
+        b.add("🥉 First Step – All medicines taken today")
+    if s >= 3:
+        b.add("🥈 3-Day Streak – Building consistency")
+    if s >= 7:
+        b.add("🥇 7-Day Champion – Perfect weekly streak")
+    if score == 100:
+        b.add("💯 Perfect Day – 100% adherence")
+    if score >= 90:
+        b.add("🔥 Consistency King – Above 90% adherence")
+
 def draw_reward_image():
-    img = Image.new("RGB", (300, 300), "white")
-    draw = ImageDraw.Draw(img)
-
-    # Face
-    draw.ellipse((50, 50, 250, 250), outline="green", width=6)
-
-    # Eyes
-    draw.ellipse((110, 120, 130, 140), fill="black")
-    draw.ellipse((170, 120, 190, 140), fill="black")
-
-    # Smile
-    draw.arc((110, 150, 190, 220), start=0, end=180, fill="green", width=5)
-
+    img = Image.new("RGB", (250, 250), "white")
+    d = ImageDraw.Draw(img)
+    d.ellipse((40, 40, 210, 210), outline="green", width=6)
+    d.ellipse((90, 100, 110, 120), fill="black")
+    d.ellipse((140, 100, 160, 120), fill="black")
+    d.arc((90, 130, 160, 190), 0, 180, fill="green", width=5)
     return img
 
-def generate_csv():
-    data = []
-    for med in st.session_state.medicines:
-        status, _ = get_status(med["time"], med["taken"])
-        data.append({
-            "Medicine Name": med["name"],
-            "Scheduled Time": med["time"].strftime("%H:%M"),
-            "Status": status,
-            "Taken": "Yes" if med["taken"] else "No"
-        })
-    return pd.DataFrame(data)
+# -------------------------------------------------
+# Sidebar
+# -------------------------------------------------
+st.sidebar.header("🌈 Daily Companion")
+st.sidebar.info("💡 Stay consistent. Small habits protect long-term health.")
+st.sidebar.info("🌙 Dark mode can be enabled from Streamlit settings.")
 
-# -----------------------------
-# Add Medicine Section
-# -----------------------------
+# -------------------------------------------------
+# Add Medicine
+# -------------------------------------------------
 st.header("➕ Add Medicine")
 
 with st.form("medicine_form"):
     name = st.text_input("Medicine Name")
-    med_time = st.time_input("Scheduled Time")
-    add = st.form_submit_button("Add Medicine")
+    time = st.time_input("Scheduled Time")
+    submit = st.form_submit_button("Add Medicine")
 
-    if add and name:
+    if submit and name:
         st.session_state.medicines.append({
             "name": name,
-            "time": med_time,
+            "time": time,
             "taken": False
         })
         st.success("Medicine added successfully!")
 
-# -----------------------------
+# -------------------------------------------------
 # Medicine Checklist
-# -----------------------------
-st.header("📋 Today's Medicine Checklist")
+# -------------------------------------------------
+st.header("📋 Today’s Medicine Checklist")
 
 if not st.session_state.medicines:
     st.info("No medicines added yet.")
 else:
     for i, med in enumerate(st.session_state.medicines):
-        status, color = get_status(med["time"], med["taken"])
-
         c1, c2, c3, c4 = st.columns([3, 2, 2, 2])
         c1.write(f"**{med['name']}**")
         c2.write(med["time"].strftime("%H:%M"))
-        c3.markdown(
-            f"<span style='color:{color}'><b>{status}</b></span>",
-            unsafe_allow_html=True
-        )
 
-        if c4.button("Mark as Taken", key=f"taken_{i}"):
+        status = get_status(med["time"], med["taken"])
+
+        if status == "Taken":
+            c3.success("🟢 Taken")
+        elif status == "Upcoming":
+            c3.warning("🟡 Upcoming")
+        else:
+            c3.error("🔴 Missed")
+
+        if c4.button("Mark as Taken", key=f"take_{i}"):
             st.session_state.medicines[i]["taken"] = True
             st.rerun()
 
-# -----------------------------
-# Adherence Score
-# -----------------------------
-st.header("📊 Weekly Adherence Score")
+# -------------------------------------------------
+# Progress Overview
+# -------------------------------------------------
+st.header("📊 Progress Overview")
 
 score = calculate_adherence()
 st.progress(score)
-st.write(f"**Adherence: {score}%**")
+st.write(f"**Adherence Score:** {score}%")
 
-if score >= 80:
-    st.success("Excellent! You're taking great care of your health 🌟")
-    st.image(draw_reward_image(), caption="🎉 Great Adherence Reward")
+update_streak()
+check_badges(score)
+
+st.write(f"🔥 **Current Streak:** {st.session_state.streak} day(s)")
+
+# -------------------------------------------------
+# 🌟 Motivational Tips (ALWAYS VISIBLE – FINAL FIX)
+# -------------------------------------------------
+st.subheader("🌟 Motivational Tips")
+
+motivational_lines = [
+    "💙 Small habits done daily lead to big health wins.",
+    "⏰ Medicines work best when taken on time.",
+    "🌱 Consistency today protects your future self.",
+    "💪 You’re stronger than your excuses — keep going!",
+    "🧠 Health is a routine, not a one-time decision."
+]
+
+# Always visible motivation
+st.info(random.choice(motivational_lines))
+
+# Performance-based feedback
+if not st.session_state.medicines:
+    st.warning("➕ Add your medicines to begin your health journey.")
+elif score == 100:
+    st.success("🏆 Perfect day! You didn’t miss a single dose.")
+elif score >= 80:
+    st.success("🌟 Great consistency! Keep it up.")
+elif score >= 50:
+    st.warning("🙂 You’re halfway there. Stay focused.")
 else:
-    st.warning("Keep going! Every dose matters 💙")
+    st.error("💙 Missed doses happen. Tomorrow is a fresh start.")
 
-# -----------------------------
-# Download Report Section
-# -----------------------------
+if score >= 80 and st.session_state.medicines:
+    st.image(draw_reward_image(), caption="🎉 Keep going!")
+
+# -------------------------------------------------
+# Achievements & Badges
+# -------------------------------------------------
+st.header("🏆 Achievements & Badges")
+
+if st.session_state.badges:
+    for badge in st.session_state.badges:
+        st.success(badge)
+else:
+    st.info("No badges yet. Consistency unlocks rewards!")
+
+if st.session_state.streak == 7:
+    st.balloons()
+
+# -------------------------------------------------
+# Feedback
+# -------------------------------------------------
+st.header("📝 User Feedback")
+
+with st.form("feedback_form"):
+    feedback = st.text_area("Share your experience with MedTimer")
+    send = st.form_submit_button("Submit Feedback")
+
+    if send and feedback:
+        st.success("Thank you for your feedback! 💙")
+
+# -------------------------------------------------
+# Download Report
+# -------------------------------------------------
 st.header("⬇️ Download Medicine Report")
 
 if st.session_state.medicines:
-    df = generate_csv()
+    df = pd.DataFrame([
+        {
+            "Medicine": m["name"],
+            "Time": m["time"].strftime("%H:%M"),
+            "Taken": "Yes" if m["taken"] else "No"
+        } for m in st.session_state.medicines
+    ])
 
     st.download_button(
-        label="Download CSV Report",
-        data=df.to_csv(index=False),
-        file_name="medtimer_report.csv",
-        mime="text/csv"
+        "Download CSV Report",
+        df.to_csv(index=False),
+        "medtimer_report.csv",
+        "text/csv"
     )
-else:
-    st.info("Add medicines to generate a report.")
-
-# -----------------------------
-# Motivational Tip
-# -----------------------------
-st.info("💡 Tip: Taking medicines on time improves recovery and peace of mind.")
