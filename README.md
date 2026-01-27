@@ -58,4 +58,4 @@ This app is designed to reduce missed doses and encourage consistency in daily m
 
 ---
 ### Live Streamlit Application Link:-
-[(https://idai102-1000432-namanomshrestha.streamlit.app/)
+https://idai102-1000432-namanomshrestha.streamlit.app/
