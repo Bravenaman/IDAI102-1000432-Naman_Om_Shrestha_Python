@@ -44,7 +44,7 @@ This app is designed to reduce missed doses and encourage consistency in daily m
 
 ### ⬇️ Downloadable Report
 - Export medicine data as a **CSV file**
-- Includes medicine name, scheduled time, and status
+- Includes medicine name, scheduled time, and status (Taken/not Taken)
 
 ---
 
