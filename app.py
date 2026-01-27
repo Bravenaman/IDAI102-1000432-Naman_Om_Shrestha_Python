@@ -27,6 +27,9 @@ if "streak" not in st.session_state:
 if "badges" not in st.session_state:
     st.session_state.badges = set()
 
+if "celebrate" not in st.session_state:
+    st.session_state.celebrate = False
+
 # -------------------------------------------------
 # Utility Functions
 # -------------------------------------------------
@@ -81,7 +84,7 @@ def draw_reward_image():
 # Sidebar
 # -------------------------------------------------
 st.sidebar.header("🌈 Daily Companion")
-st.sidebar.info("💡 Stay consistent. Small habits protect long-term health.")
+st.sidebar.info("💡 Consistency today protects your future health.")
 st.sidebar.info("🌙 Dark mode can be enabled from Streamlit settings.")
 
 # -------------------------------------------------
@@ -125,8 +128,17 @@ else:
             c3.error("🔴 Missed")
 
         if c4.button("Mark as Taken", key=f"take_{i}"):
-            st.session_state.medicines[i]["taken"] = True
+            if not st.session_state.medicines[i]["taken"]:
+                st.session_state.medicines[i]["taken"] = True
+                st.session_state.celebrate = True
             st.rerun()
+
+# -------------------------------------------------
+# 🎉 Celebration Animation
+# -------------------------------------------------
+if st.session_state.celebrate:
+    st.balloons()
+    st.session_state.celebrate = False
 
 # -------------------------------------------------
 # Progress Overview
@@ -143,7 +155,7 @@ check_badges(score)
 st.write(f"🔥 **Current Streak:** {st.session_state.streak} day(s)")
 
 # -------------------------------------------------
-# 🌟 Motivational Tips (ALWAYS VISIBLE – FINAL FIX)
+# 🌟 Motivational Tips (ALWAYS VISIBLE)
 # -------------------------------------------------
 st.subheader("🌟 Motivational Tips")
 
@@ -155,10 +167,8 @@ motivational_lines = [
     "🧠 Health is a routine, not a one-time decision."
 ]
 
-# Always visible motivation
 st.info(random.choice(motivational_lines))
 
-# Performance-based feedback
 if not st.session_state.medicines:
     st.warning("➕ Add your medicines to begin your health journey.")
 elif score == 100:
@@ -182,7 +192,7 @@ if st.session_state.badges:
     for badge in st.session_state.badges:
         st.success(badge)
 else:
-    st.info("No badges yet. Consistency unlocks rewards!")
+    st.info("No badges yet. Stay consistent to unlock rewards!")
 
 if st.session_state.streak == 7:
     st.balloons()
