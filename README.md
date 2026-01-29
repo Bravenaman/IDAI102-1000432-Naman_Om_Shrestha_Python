@@ -81,33 +81,15 @@ IDAI102-1000432-Naman-Om-Shrestha-SA/
 ├── interactive links/      # GitHub & Streamlit links
 │   └── README.md
 │
-├── assets/
-│   ├── stage1/             # Planning & design
-│   │   ├── mindmap.png
-│   │   ├── wireframe.png
-│   │   └── turtle_mockup.png   # Early Turtle-based concept
-│   │
-│   ├── stage3/             # Interface development
-│   │   ├── interface_1.png
-│   │   ├── interface_2.png
-│   │   └── interface_3.png
-│   │
-│   ├── stage4/             # Testing & gamification evidence
-│   │   ├── testing_1.png
-│   │   ├── badges.png
-│   │   └── adherence_progress.png
-│   │
-│   └── screenshots/        # Final deployed app UI
-│       ├── ui_dashboard.png
-│       ├── ui_checklist.png
-│       ├── ui_badges.png
-│       ├── ui_progress.png
-│       └── ui_motivation.png
 ```
 
 ---
 
+## 🧠 Planning & Design
 
+<img width="1825" height="736" alt="Screenshot 2026-01-29 090520" src="https://github.com/user-attachments/assets/84a135c3-4af1-46eb-a410-182f10aa6fab" />
+*Figure:- Mindmap
+---
 
 ## 📸 Interface Screenshots (Final UI)
 
@@ -121,6 +103,7 @@ IDAI102-1000432-Naman-Om-Shrestha-SA/
 
 <img width="1918" height="734" alt="Screenshot 2026-01-28 195229" src="https://github.com/user-attachments/assets/195614e5-9235-44f9-94f1-f7d759620b6a" />
 
+---
 
 ## 🔧 Integration Details & 🚀 Deployment Instructions
 
