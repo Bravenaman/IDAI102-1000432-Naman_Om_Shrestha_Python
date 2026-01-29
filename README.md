@@ -107,6 +107,8 @@ IDAI102-1000432-Naman-Om-Shrestha-SA/
 
 ---
 
+
+
 ## 📸 Interface Screenshots (Final UI)
 
 <img width="1919" height="866" alt="Screenshot 2026-01-28 195058" src="https://github.com/user-attachments/assets/52d055f1-b560-4c05-aa3a-c57e5a1e75a3" />
