@@ -89,6 +89,7 @@ IDAI102-1000432-Naman-Om-Shrestha-SA/
 
 <img width="1825" height="736" alt="Screenshot 2026-01-29 090520" src="https://github.com/user-attachments/assets/84a135c3-4af1-46eb-a410-182f10aa6fab" />
 *Figure:- Mindmap
+
 ---
 
 ## 📸 Interface Screenshots (Final UI)
@@ -139,6 +140,7 @@ To run the MedTimer application locally, follow these steps:
 pip install streamlit pandas pillow
 ```
 
+---
 
 ### Live Streamlit Application Link:-
 https://idai102-1000432-namanomshrestha.streamlit.app/
