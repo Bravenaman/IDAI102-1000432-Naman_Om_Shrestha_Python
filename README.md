@@ -47,9 +47,9 @@ This project values these issues by:-
 - Medicines are added using a clear input form.
 - Daily medicines are shown in a checklist format.
 - Colour indicators show medicine status:
-  🟩 Green: Taken
-  🟧 Orange: Upcoming
-  🟥 Red: Missed
+  - 🟩 Green: Taken
+  - 🟧 Orange: Upcoming
+  - 🟥 Red: Missed
 - Buttons allow users to mark medicines as taken or delete them.
 - Progress bars, motivational tips, celebrations, and badges are used to encourage regular usage.
 
